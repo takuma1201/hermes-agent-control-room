@@ -1,0 +1,60 @@
+# Local agent / AI service registry. Measured 2026-10-01 (lsof, hermes profile list, launchctl).
+# No secret values. Re-measure before relying on ports or PIDs.
+
+agents:
+  hermes-default:
+    role: Primary Hermes agent (desktop app, business planning, implementation)
+    docs: agents/hermes-default
+    data_dir: ~/.hermes
+    model: omniroute / auto/pro-coding (http://localhost:21128/v1)
+    gateway: running manually (not a launchd service); multiplex_profiles=true
+    messaging: telegram disabled; slack/discord not configured
+    task_queue: hermes kanban (~/.hermes/kanban.db)
+    allowed_work: [planning, research, code changes, browser automation]
+    forbidden_work:
+      - destructive operations without explicit approval
+      - modifying other profiles without explicit direction
+
+  hermes-lleval:
+    role: Isolated local-LLM comparison profile (no cloud, no fallback)
+    docs: agents/hermes-lleval
+    data_dir: ~/.hermes/profiles/lleval
+    model: lleval / qwen36-35b-a3b via llama-server http://127.0.0.1:18500/v1
+    gateway: served by default-profile multiplexer
+    toolsets: [terminal, file]
+    allowed_work: [local LLM benchmarking]
+    forbidden_work: [cloud model calls, production work]
+
+services:
+  omniroute:
+    role: LLM router used by hermes-default and OpenCode
+    listen: [127.0.0.1:21128, 127.0.0.1:21131, 127.0.0.1:21132]
+    autostart: LaunchAgent com.omniroute.menubar
+    exposure: localhost
+  9router:
+    role: LLM router (Next.js app, tray)
+    listen: ["*:20128"]
+    exposure: ALL INTERFACES (LAN + Tailscale) - see audits/2026-10-01-security.md
+  9remote:
+    role: remote access server (~/.hermes/node/lib/node_modules/9remote)
+    listen: ["*:2208"]
+    exposure: ALL INTERFACES (LAN + Tailscale) - see audits/2026-10-01-security.md
+  openclaw-gateway:
+    listen: [127.0.0.1:18789, "[::1]:18789"]
+    exposure: localhost
+  projects-manager-chat:
+    role: ~/workspace/projects/Projects Manager/scripts/chat_server.py
+    listen: [127.0.0.1:21500]
+    exposure: localhost
+  tokentracker:
+    listen: [127.0.0.1:7680]
+    exposure: localhost
+  lleval-llama-server:
+    listen: [127.0.0.1:18500]
+    status: not listening at measurement time (started on demand)
+
+coding_clis:
+  opencode:
+    config: ~/.config/opencode (orchestrator + 8 subagents, model omniroute/auto/*)
+  claude-code:
+    agents: ~/.claude/agents
