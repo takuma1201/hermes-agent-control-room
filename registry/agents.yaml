@@ -25,6 +25,24 @@ agents:
     allowed_work: [local LLM benchmarking]
     forbidden_work: [cloud model calls, production work]
 
+  openclaw:
+    role: Telegram front door + daily brief (scoped to one job on purpose)
+    docs: agents/openclaw
+    data_dir: ~/.openclaw
+    model: omniroute / auto/pro-coding (http://127.0.0.1:21128/v1)
+    gateway: LaunchAgent ai.openclaw.gateway, listen 127.0.0.1:18789
+    messaging: telegram @ts1201_openclaw_bot, allowFrom 8343028869
+    cron: ["Morning Brief 0 8 * * * -> telegram", "Memory Dreaming Promotion 0 3 * * * (internal)"]
+    allowed_work: [daily brief, telegram relay]
+    forbidden_work: [planning and implementation work (that is Hermes), credential changes]
+
+  openfang:
+    role: FROZEN 2026-10-01 - installed but not running, not used
+    docs: agents/openfang
+    data_dir: ~/.openfang
+    status: daemon stopped, no autostart, 0 cron jobs, 30 stock sample agents
+    unfreeze_if: prediction scoring (predictor Hand) becomes a real need
+
 services:
   omniroute:
     role: LLM router used by hermes-default and OpenCode
