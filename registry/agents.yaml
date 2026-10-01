@@ -30,11 +30,12 @@ services:
     role: LLM router used by hermes-default and OpenCode
     listen: [127.0.0.1:21128, 127.0.0.1:21131, 127.0.0.1:21132]
     autostart: LaunchAgent com.omniroute.menubar
-    exposure: localhost
+    exposure: localhost + Tailscale Funnel (public internet) https://macbook-pro.tail147719.ts.net -> 127.0.0.1:21128, API returns 401 without key
   9router:
     role: LLM router (Next.js app, tray)
-    listen: ["*:20128"]
-    exposure: ALL INTERFACES (LAN + Tailscale) - see audits/2026-10-01-security.md
+    listen: [127.0.0.1:20128]
+    exposure: localhost (LaunchAgent com.9router.autostart passes --host 127.0.0.1 since 2026-10-01)
+    used_by: [hermes config.yaml provider, opencode.json, codex config.toml]
   # 9remote: REMOVED 2026-10-01 (was *:2208 + cloudflared tunnel). Backup and restore steps:
   #   ~/workspace/backups/9remote-removal-20261001-153822/RESTORE.md
   openclaw-gateway:
