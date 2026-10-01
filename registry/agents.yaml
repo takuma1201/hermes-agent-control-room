@@ -35,10 +35,8 @@ services:
     role: LLM router (Next.js app, tray)
     listen: ["*:20128"]
     exposure: ALL INTERFACES (LAN + Tailscale) - see audits/2026-10-01-security.md
-  9remote:
-    role: remote access server (~/.hermes/node/lib/node_modules/9remote)
-    listen: ["*:2208"]
-    exposure: ALL INTERFACES (LAN + Tailscale) - see audits/2026-10-01-security.md
+  # 9remote: REMOVED 2026-10-01 (was *:2208 + cloudflared tunnel). Backup and restore steps:
+  #   ~/workspace/backups/9remote-removal-20261001-153822/RESTORE.md
   openclaw-gateway:
     listen: [127.0.0.1:18789, "[::1]:18789"]
     exposure: localhost
