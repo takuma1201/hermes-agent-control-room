@@ -16,3 +16,5 @@ google_client_secret.json
 client_secret*.json
 node_modules/
 .DS_Store
+
+hermes-auto/     # weekly hermes backup zips (CONTAIN SECRETS - never commit)

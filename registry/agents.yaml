@@ -32,6 +32,7 @@ agents:
     model: omniroute / auto/pro-coding (http://127.0.0.1:21128/v1)
     gateway: LaunchAgent ai.openclaw.gateway, listen 127.0.0.1:18789
     messaging: telegram @ts1201_openclaw_bot, allowFrom 8343028869
+    cron_backup: "Weekly Hermes Backup 0 4 * * 0 (hermes cron, script weekly-backup.sh)"
     cron: ["Morning Brief 0 8 * * * -> telegram", "Memory Dreaming Promotion 0 3 * * * (internal)"]
     allowed_work: [daily brief, telegram relay]
     forbidden_work: [planning and implementation work (that is Hermes), credential changes]
@@ -56,6 +57,14 @@ services:
     used_by: [hermes config.yaml provider, opencode.json, codex config.toml]
   # 9remote: REMOVED 2026-10-01 (was *:2208 + cloudflared tunnel). Backup and restore steps:
   #   ~/workspace/backups/9remote-removal-20261001-153822/RESTORE.md
+  ollama:
+    listen: [127.0.0.1:11434]
+    exposure: localhost (settings.expose set to 0 in Ollama.app DB on 2026-10-03)
+    used_by: [openclaw memorySearch (nomic-embed-text)]
+  open-webui:
+    listen: ["*:8081"]
+    exposure: started with --host 0.0.0.0 but NOT reachable from LAN (firewall); auth unverified
+    status: OPEN - see audits/2026-10-01-security.md
   openclaw-gateway:
     listen: [127.0.0.1:18789, "[::1]:18789"]
     exposure: localhost
